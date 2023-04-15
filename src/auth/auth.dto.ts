@@ -26,3 +26,9 @@ export class UserCommonDetailsDTO {
   @IsNotEmpty()
   password: string;
 }
+
+export class UserEditDTO {
+  @IsNotEmpty()
+  @MinLength(3)
+  name: string;
+}

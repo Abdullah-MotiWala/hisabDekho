@@ -6,12 +6,10 @@ import {
   Post,
   Put,
   UsePipes,
-  ValidationPipe,
-  HttpStatus,
   UseGuards,
   Request
 } from "@nestjs/common";
-import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
+import { CreateUserDTO, UserCommonDetailsDTO, UserEditDTO } from "./auth.dto";
 import { AuthsService } from "./auth.service";
 import { SETTINGS } from "./auth.utils";
 import { AuthGuard } from "./auth.guard";
@@ -38,15 +36,19 @@ export class AuthController {
   @UseGuards(AuthGuard)
   @Delete("delete")
   async deleteUser(
-    @Request() requset: { user: { sub: number } }
+    @Request() request: { user: { sub: number } }
   ): Promise<string> {
-    return this.authService.remove(requset.user.sub);
+    return this.authService.remove(request.user.sub);
   }
 
-  // // Route # 4 Edit User
-  // @Put('id')
-  // editUser(@Body() body: UserCommonDetailsDTO, @Param('id') id: string | number): string {
-  //     console.log(body, id)
-  //     return "edit user"
-  // }
+  // Route # 4 Edit User
+  @Put("edit")
+  @UseGuards(AuthGuard)
+  @UsePipes(SETTINGS.VALIDATION_PIPES)
+  editUser(
+    @Body() name: UserEditDTO,
+    @Request() request: { user: { sub: number } }
+  ): Promise<string> {
+    return this.authService.edit({ name, id: request.user.sub });
+  }
 }

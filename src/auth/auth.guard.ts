@@ -22,7 +22,7 @@ export class AuthGuard implements CanActivate {
     try {
       // verifying toke
       const payload = await this.jwtService.verify(token, {
-        secret: "secret"
+        secret: process.env.JWT_SECRET
       });
 
       //   embedd user detail as req.use

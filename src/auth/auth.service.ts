@@ -5,14 +5,14 @@ import {
   NotFoundException,
   UnauthorizedException
 } from "@nestjs/common";
-import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
+import { CreateUserDTO, UserCommonDetailsDTO, UserEditDTO } from "./auth.dto";
 import { Auth } from "./auth.entity";
 import { MESSAGES } from "./auth.utils";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthsService {
-  constructor(private authHelper: AuthHelper, private jwtService: JwtService) {}
+  constructor(private authHelper: AuthHelper) {}
   async create(body: CreateUserDTO): Promise<Auth> {
     const { name, email, password } = body;
 
@@ -50,5 +50,13 @@ export class AuthsService {
     }
     await Auth.delete(id);
     return "User Deleted Successfully";
+  }
+
+  async edit({ name, id }: { name: any; id: number }): Promise<string> {
+    const user = await Auth.update({ id }, { name });
+    if (!user.affected) {
+      throw new NotFoundException();
+    }
+    return "User Updated Successfully";
   }
 }
