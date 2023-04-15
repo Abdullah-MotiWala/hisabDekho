@@ -4,29 +4,31 @@ import {
   Delete,
   Get,
   Post,
-  Param,
   Put,
   UsePipes,
   ValidationPipe,
-  HttpStatus
+  HttpStatus,
+  UseGuards,
+  Request
 } from "@nestjs/common";
 import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
 import { AuthsService } from "./auth.service";
 import { SETTINGS } from "./auth.utils";
+import { localAuthGuard } from "./auth.guard";
 
-@Controller("auth")
+@Controller()
 export class AuthController {
   constructor(private authService: AuthsService) {}
 
   // Route # 1 Get User
-  @Get()
+  @Get("signin")
   @UsePipes(SETTINGS.VALIDATION_PIPES)
-  async getUser(@Body() body: UserCommonDetailsDTO) {
+  async getUser(@Body() body: UserCommonDetailsDTO): Promise<any> {
     return this.authService.findOne(body);
   }
 
   // Route # 2 Create User
-  @Post()
+  @Post("signup")
   @UsePipes(SETTINGS.VALIDATION_PIPES)
   async createUser(@Body() body: CreateUserDTO) {
     return this.authService.create(body);
@@ -44,12 +46,5 @@ export class AuthController {
   // editUser(@Body() body: UserCommonDetailsDTO, @Param('id') id: string | number): string {
   //     console.log(body, id)
   //     return "edit user"
-  // }
-
-  // // Route # 5 Get All Users
-  // @Get('all')
-  // getAllUser(): string {
-  //     console.log()
-  //     return "get All Users"
   // }
 }

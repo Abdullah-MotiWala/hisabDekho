@@ -1,28 +1,41 @@
-import { Injectable } from "@nestjs/common";
+import { JwtService } from "@nestjs/jwt";
+import { AuthHelper } from "./auth.helper";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
 import { Auth } from "./auth.entity";
+import { MESSAGES } from "./auth.utils";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthsService {
+  constructor(private authHelper: AuthHelper, private jwtService: JwtService) {}
   async create(body: CreateUserDTO): Promise<Auth> {
-    const { name, email } = body;
-
-    const salt = await bcrypt.genSalt();
-    const hashedPass = await bcrypt.hash(body.password, salt);
+    const { name, email, password } = body;
 
     // creating new entity
     const user = new Auth();
     user.name = name;
     user.email = email;
-    user.password = hashedPass;
+    user.password = password;
 
     // saving user in db
     return await user.save();
   }
 
-  findOne(body: UserCommonDetailsDTO): string {
-    console.log("body");
-    return "get";
+  async findOne(
+    body: UserCommonDetailsDTO
+  ): Promise<{ access_token: string } | undefined> {
+    const { email, password } = body;
+    const user = await Auth.findOne({ where: { email } });
+    // const { email, password } = body;
+    // // checking if user exist
+    if (!user) throw new UnauthorizedException(MESSAGES.CRED_NOT_MATCHED);
+
+    // // checking if password is correct
+    const isPasswordMatched = await bcrypt.compare(password, user.password);
+    if (!isPasswordMatched)
+      throw new UnauthorizedException(MESSAGES.CRED_NOT_MATCHED);
+
+    return this.authHelper.tokenGenerator(user);
   }
 }

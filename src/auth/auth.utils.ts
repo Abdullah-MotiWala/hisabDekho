@@ -10,8 +10,10 @@ export const REGEX = {
 // Error Message
 const PASSWORD_ERROR_REGEX =
   "Password must have 1 upper case letter, 1 lower case letter, 1 digit, 1 special character";
+const CRED_NOT_MATCHED = "Credentials not matched!";
 export const MESSAGES = {
-  PASSWORD_ERROR_REGEX
+  PASSWORD_ERROR_REGEX,
+  CRED_NOT_MATCHED
 };
 
 // Settings

@@ -1,4 +1,11 @@
-import { BaseEntity, Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import {
+  BaseEntity,
+  BeforeInsert,
+  Column,
+  Entity,
+  PrimaryGeneratedColumn
+} from "typeorm";
+import * as bcrypt from "bcrypt";
 
 @Entity("Auths")
 export class Auth extends BaseEntity {
@@ -27,4 +34,11 @@ export class Auth extends BaseEntity {
     default: false
   })
   isVerified: boolean;
+
+  @BeforeInsert()
+  // hashing password before saving using ORM middleware
+  async setPassword(password: string) {
+    const salt = await bcrypt.genSalt();
+    this.password = await bcrypt.hash(password || this.password, salt);
+  }
 }
