@@ -14,7 +14,7 @@ import {
 import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
 import { AuthsService } from "./auth.service";
 import { SETTINGS } from "./auth.utils";
-import { localAuthGuard } from "./auth.guard";
+import { AuthGuard } from "./auth.guard";
 
 @Controller()
 export class AuthController {
@@ -34,14 +34,16 @@ export class AuthController {
     return this.authService.create(body);
   }
 
-  // // Route # 3 Delete User
-  // @Delete(':id')
-  // deleteUser(@Param() @Param('id') id: string | number): string {
-  //     console.log(id)
-  //     return "delete user"
-  // }
+  // Route # 3 Delete User
+  @UseGuards(AuthGuard)
+  @Delete("delete")
+  async deleteUser(
+    @Request() requset: { user: { sub: number } }
+  ): Promise<string> {
+    return this.authService.remove(requset.user.sub);
+  }
 
-  // // Route # 4 Get User
+  // // Route # 4 Edit User
   // @Put('id')
   // editUser(@Body() body: UserCommonDetailsDTO, @Param('id') id: string | number): string {
   //     console.log(body, id)

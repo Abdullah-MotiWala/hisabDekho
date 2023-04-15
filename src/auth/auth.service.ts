@@ -1,6 +1,10 @@
 import { JwtService } from "@nestjs/jwt";
 import { AuthHelper } from "./auth.helper";
-import { Injectable, UnauthorizedException } from "@nestjs/common";
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException
+} from "@nestjs/common";
 import { CreateUserDTO, UserCommonDetailsDTO } from "./auth.dto";
 import { Auth } from "./auth.entity";
 import { MESSAGES } from "./auth.utils";
@@ -37,5 +41,14 @@ export class AuthsService {
       throw new UnauthorizedException(MESSAGES.CRED_NOT_MATCHED);
 
     return this.authHelper.tokenGenerator(user);
+  }
+
+  async remove(id: number): Promise<string> {
+    const user = await Auth.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    await Auth.delete(id);
+    return "User Deleted Successfully";
   }
 }
