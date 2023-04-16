@@ -13,7 +13,7 @@ export class AuthHelper {
       sub: id,
       email
     });
-    return { access_token };
+    return access_token;
   }
 
 

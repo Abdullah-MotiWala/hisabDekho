@@ -1,5 +1,5 @@
 import { IsEmail, IsNotEmpty, Matches, MinLength } from "class-validator";
-import { MESSAGES, REGEX } from "./auth.utils";
+import { ERROR_MESSAGES, REGEX } from "./auth.utils";
 
 export class CreateUserDTO {
   @IsEmail()
@@ -13,7 +13,7 @@ export class CreateUserDTO {
   @MinLength(8)
   @IsNotEmpty()
   @Matches(REGEX.PASSWORD_RULE, {
-    message: MESSAGES.PASSWORD_ERROR_REGEX
+    message: ERROR_MESSAGES.PASSWORD_ERROR_REGEX
   })
   password: string;
 }

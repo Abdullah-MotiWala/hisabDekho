@@ -19,7 +19,7 @@ export class AuthController {
   constructor(private authService: AuthsService) {}
 
   // Route # 1 Get User
-  @Get("signin")
+  @Post("signin")
   @UsePipes(SETTINGS.VALIDATION_PIPES)
   async getUser(@Body() body: UserCommonDetailsDTO): Promise<any> {
     return this.authService.findOne(body);

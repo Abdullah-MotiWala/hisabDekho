@@ -7,13 +7,17 @@ import {
 } from "@nestjs/common";
 import { CreateUserDTO, UserCommonDetailsDTO, UserEditDTO } from "./auth.dto";
 import { Auth } from "./auth.entity";
-import { MESSAGES } from "./auth.utils";
+import { ERROR_MESSAGES, SUCCESS_MESSAGES } from "./auth.utils";
 import * as bcrypt from "bcrypt";
 
 @Injectable()
 export class AuthsService {
   constructor(private authHelper: AuthHelper) {}
-  async create(body: CreateUserDTO): Promise<Auth> {
+  async create(
+    body: CreateUserDTO
+  ): Promise<
+    { access_token: string; success: boolean; message: string } | undefined
+  > {
     const { name, email, password } = body;
 
     // creating new entity
@@ -23,24 +27,35 @@ export class AuthsService {
     user.password = password;
 
     // saving user in db
-    return await user.save();
+    await user.save();
+    return {
+      access_token: await this.authHelper.tokenGenerator(user),
+      success: true,
+      message: SUCCESS_MESSAGES.SIGNUP_SUCCEED
+    };
   }
 
   async findOne(
     body: UserCommonDetailsDTO
-  ): Promise<{ access_token: string } | undefined> {
+  ): Promise<
+    { access_token: string; success: boolean; message: string } | undefined
+  > {
     const { email, password } = body;
     const user = await Auth.findOne({ where: { email } });
     // const { email, password } = body;
     // // checking if user exist
-    if (!user) throw new UnauthorizedException(MESSAGES.CRED_NOT_MATCHED);
+    if (!user) throw new UnauthorizedException(ERROR_MESSAGES.CRED_NOT_MATCHED);
 
     // // checking if password is correct
     const isPasswordMatched = await bcrypt.compare(password, user.password);
     if (!isPasswordMatched)
-      throw new UnauthorizedException(MESSAGES.CRED_NOT_MATCHED);
+      throw new UnauthorizedException(ERROR_MESSAGES.CRED_NOT_MATCHED);
 
-    return this.authHelper.tokenGenerator(user);
+    return {
+      access_token: await this.authHelper.tokenGenerator(user),
+      success: true,
+      message: SUCCESS_MESSAGES.LOGIN_SUCCEED
+    };
   }
 
   async remove(id: number): Promise<string> {
