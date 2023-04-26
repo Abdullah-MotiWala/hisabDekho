@@ -37,7 +37,7 @@ export class AuthController {
   @Delete("delete")
   async deleteUser(
     @Request() request: { user: { sub: number } }
-  ): Promise<string> {
+  ): Promise<{ success: boolean; message: string }> {
     return this.authService.remove(request.user.sub);
   }
 

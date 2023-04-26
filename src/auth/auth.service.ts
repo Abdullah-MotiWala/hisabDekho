@@ -58,13 +58,13 @@ export class AuthsService {
     };
   }
 
-  async remove(id: number): Promise<string> {
+  async remove(id: number): Promise<{ success: boolean; message: string }> {
     const user = await Auth.findOne({ where: { id } });
     if (!user) {
       throw new NotFoundException();
     }
-    await Auth.delete(id);
-    return "User Deleted Successfully";
+    // await Auth.delete(id);
+    return { message: "User Deleted Successfully", success: true };
   }
 
   async edit({ name, id }: { name: any; id: number }): Promise<string> {
