@@ -35,6 +35,11 @@ export class Auth extends BaseEntity {
   })
   isVerified: boolean;
 
+  @Column({
+    type: "varchar"
+  })
+  emailToken: string;
+
   @BeforeInsert()
   // hashing password before saving using ORM middleware
   async setPassword(password: string) {

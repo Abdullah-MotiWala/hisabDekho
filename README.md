@@ -1,5 +1,5 @@
 ## V1
-- User would use all the cruds of auth
+- # User would use all the cruds of auth
 - User have to verify account
 - User can add the details of expenditure and income 
 - USer will get the graph of transactions weekly bi weekly and monthly

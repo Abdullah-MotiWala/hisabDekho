@@ -1,6 +1,8 @@
 import { JwtService } from "@nestjs/jwt";
 import { AuthHelper } from "./auth.helper";
 import {
+  HttpException,
+  HttpStatus,
   Injectable,
   NotFoundException,
   UnauthorizedException
@@ -70,7 +72,7 @@ export class AuthsService {
     if (!user) {
       throw new NotFoundException();
     }
-    // await Auth.delete(id);
+    await Auth.delete(id);
     return { message: "User Deleted Successfully", success: true };
   }
 
@@ -86,5 +88,29 @@ export class AuthsService {
       throw new NotFoundException();
     }
     return { message: "User Updated Successfully", user: name, success: true };
+  }
+
+  async sendConfirmationEmail(id: number) {
+    const user = await Auth.findOne({ where: { id } });
+    if (!user) {
+      throw new NotFoundException();
+    }
+    if (user.emailToken) {
+      let isTokenVerified = await this.authHelper.verifyToken(user.emailToken);
+      if (isTokenVerified) {
+        throw new HttpException(
+          "Verification email is already sent",
+          HttpStatus.BAD_REQUEST
+        );
+      }
+    }
+    if (user.isVerified) {
+      throw new HttpException(
+        "User is already verified",
+        HttpStatus.BAD_REQUEST
+      );
+    }
+    let emailToken = await this.authHelper.tokenGenerator(user);
+    await Auth.update({ id }, { emailToken });
   }
 }

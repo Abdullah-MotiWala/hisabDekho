@@ -51,4 +51,13 @@ export class AuthController {
   ): Promise<{ success: boolean; message: string; user: string }> {
     return this.authService.edit({ name, id: request.user.sub });
   }
+
+  // Route # 5 Send Verification Email
+  @Get("send-confirmation-email")
+  @UseGuards(AuthGuard)
+  sendEmail(
+    @Request() request: { user: { sub: number } }
+  ): Promise<{ success: boolean; message: string } | undefined> | any {
+    return this.authService.sendConfirmationEmail(request.user.sub);
+  }
 }

@@ -16,5 +16,10 @@ export class AuthHelper {
     return access_token;
   }
 
-
+  async verifyToken(token: string) {
+    const payload = this.jwtService.verify(token, {
+      secret: process.env.JWT_SECRET
+    });
+    return payload;
+  }
 }
