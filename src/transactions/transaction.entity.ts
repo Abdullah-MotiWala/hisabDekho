@@ -4,6 +4,7 @@ import {
     Entity,
     PrimaryGeneratedColumn
 } from "typeorm";
+import { transactionTypes } from "./transaction.utils";
 
 @Entity("Transaction")
 export class Transaction extends BaseEntity {
@@ -31,6 +32,11 @@ export class Transaction extends BaseEntity {
         type: "numeric"
     })
     createdBy: number
+
+    @Column({
+        type: "numeric",
+    })
+    transType: number | string
 
     @Column({
         type: "boolean",

@@ -9,7 +9,7 @@ import {
     UsePipes,
     UseGuards,
     Request,
-    Req
+    Param,
 } from "@nestjs/common";
 import { AddTransaction } from "./transaction.dto";
 import { SETTINGS } from "./transaction.utils";
@@ -19,14 +19,56 @@ import { AuthGuard } from 'src/auth/auth.guard';
 export class TransController {
     constructor(private transService: TransService) { }
 
-    // Route # 1 add expense
+    // Route # 1 add transaction
     @UseGuards(AuthGuard)
-    @Post('add')
+    @Post()
     @UsePipes(SETTINGS.VALIDATION_PIPES)
-    async addExpense(@Body() body: AddTransaction): Promise<any> {
-        // console.log(request.user, "req")
-        return this.transService.add(body)
+    async addExpense(@Body() body: AddTransaction,
+        @Request() request: { user: { sub: number } }
+    ): Promise<any> {
+        return this.transService.create(body, request.user.sub)
     }
+
+    // Route # 2 remove transaction
+    @UseGuards(AuthGuard)
+    @Delete(':id')
+    async deleteExpense(
+        @Param() { id }: { id: number }
+    ) {
+        console.log(id, "id")
+        return this.transService.remove(id)
+    }
+
+    // Route # 3 edit transaction
+    @UseGuards(AuthGuard)
+    @Put(':id')
+    @UsePipes(SETTINGS.VALIDATION_PIPES)
+    async editExpense(
+        @Body() body: AddTransaction,
+        @Param() { id }: { id: number }
+    ) {
+        return this.transService.edit(body, id)
+    }
+
+    // Route # 4 getAll transaction
+    @UseGuards(AuthGuard)
+    @Get(':transType')
+    async getExpensesByType(
+        @Param() { transType }: { transType: number },
+        @Request() request: { user: { sub: number } }
+    ) {
+        return this.transService.getAllByType(transType, request.user.sub)
+    }
+
+    // Route # 4 getAll transaction by type
+    @UseGuards(AuthGuard)
+    @Get()
+    async getAllExpenses(
+        @Request() request: { user: { sub: number } }
+    ) {
+        return this.transService.getAllById(request.user.sub)
+    }
+
 
     // // Route # 1 Get User
     // @Post("signin")

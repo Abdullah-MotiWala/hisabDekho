@@ -1,4 +1,3 @@
-import { JwtService } from "@nestjs/jwt";
 import { AuthHelper } from "./auth.helper";
 import {
   HttpException,

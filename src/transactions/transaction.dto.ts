@@ -6,10 +6,13 @@ export class AddTransaction {
     description: string
 
     @IsNotEmpty()
+    transType: number
+
+
+
+    @IsNotEmpty()
     @IsNumber()
-    @Min(0)
+    @Min(1)
     amount: number
 
 }
-
-
