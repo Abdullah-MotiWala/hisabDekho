@@ -6,6 +6,9 @@ import { TypeOrmModule } from "@nestjs/typeorm";
 import { typeOrmConfigAsync } from "./config/typeorm.config";
 import { ConfigModule } from "@nestjs/config";
 import { PassportModule } from "@nestjs/passport";
+import { TransController } from "./transactions/transaction.controller";
+import { TransService } from "./transactions/transaction.service";
+import { JwtService } from "@nestjs/jwt";
 
 @Module({
   imports: [
@@ -14,7 +17,7 @@ import { PassportModule } from "@nestjs/passport";
     TypeOrmModule.forRootAsync(typeOrmConfigAsync),
     PassportModule,
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [AppController, TransController],
+  providers: [AppService, TransService, JwtService]
 })
-export class AppModule {}
+export class AppModule { }

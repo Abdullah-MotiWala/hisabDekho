@@ -16,7 +16,7 @@ import { AuthGuard } from "./auth.guard";
 
 @Controller()
 export class AuthController {
-  constructor(private authService: AuthsService) {}
+  constructor(private authService: AuthsService) { }
 
   // Route # 1 Get User
   @Post("signin")
@@ -59,5 +59,10 @@ export class AuthController {
     @Request() request: { user: { sub: number } }
   ): Promise<{ success: boolean; message: string } | undefined> | any {
     return this.authService.sendConfirmationEmail(request.user.sub);
+  }
+
+  // Route # 6 Verify Email
+  verifyEmail() {
+    return "verify email"
   }
 }

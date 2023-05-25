@@ -36,7 +36,8 @@ export class Auth extends BaseEntity {
   isVerified: boolean;
 
   @Column({
-    type: "varchar"
+    type: "varchar",
+    nullable: true
   })
   emailToken: string;
 

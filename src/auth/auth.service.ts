@@ -25,7 +25,7 @@ interface LoginResponse {
 }
 @Injectable()
 export class AuthsService {
-  constructor(private authHelper: AuthHelper) {}
+  constructor(private authHelper: AuthHelper) { }
   async create(body: CreateUserDTO): Promise<LoginResponse | undefined> {
     const { name, email, password } = body;
 
@@ -110,7 +110,11 @@ export class AuthsService {
         HttpStatus.BAD_REQUEST
       );
     }
+
+    // creating token for email and also setting these in db as well
     let emailToken = await this.authHelper.tokenGenerator(user);
     await Auth.update({ id }, { emailToken });
+    // from here user will get token on mail
+
   }
 }

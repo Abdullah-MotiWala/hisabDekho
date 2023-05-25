@@ -16,6 +16,7 @@ export class CreateUserDTO {
     message: ERROR_MESSAGES.PASSWORD_ERROR_REGEX
   })
   password: string;
+
 }
 
 export class UserCommonDetailsDTO {
